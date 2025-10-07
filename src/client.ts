@@ -3,49 +3,57 @@ import { PayXHelpers } from "./helpers";
 
 export const PayX = new Proxy<PayXTypes.Client>({} as PayXTypes.Client, {
 	get(_, key) {
-		if (typeof key === "symbol") {
-			throw new Error("Cannot get a symbol key");
-		}
-		return async (request: unknown, options?: PayXTypes.Options) => {
-			const config = PayXHelpers.getConfig(options);
+		const ns = key.toString()[0].toLocaleUpperCase() + key.toString().slice(1);
+		return new Proxy(
+			{},
+			{
+				get(_, key) {
+					const method =
+						key.toString()[0].toLocaleUpperCase() + key.toString().slice(1);
 
-			const token = await getToken(config);
-			const body = JSON.stringify(request);
+					return async (request: unknown, options?: PayXTypes.Options) => {
+						const config = PayXHelpers.getConfig(options);
 
-			if (config.logging) {
-				console.debug("PX:path", key);
-				console.debug("PX:body", body);
-			}
-			const response = await fetch(`${config.baseUrl}/Hdm/${key}`, {
-				method: "POST",
-				body,
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: token,
+						const token = await getToken(config);
+						const body = JSON.stringify(request);
+
+						if (config.logging) {
+							console.debug("PX:path", `${ns}/${method}`);
+							console.debug("PX:body", body);
+						}
+						const response = await fetch(`${config.baseUrl}/${ns}/${method}`, {
+							method: "POST",
+							body,
+							headers: {
+								"Content-Type": "application/json",
+								Authorization: token,
+							},
+						}).then(async (response) => {
+							if (!response.ok) {
+								if (config.logging) {
+									console.error("PX:status", response.status);
+								}
+								throw new Error(await response.text().catch((e) => e));
+							}
+							const content = await response.text();
+							if (config.logging) {
+								console.debug("PX:response", content);
+							}
+							try {
+								return JSON.parse(content);
+							} catch {
+								if (config.logging) {
+									console.debug("PX:not-json");
+								}
+								return content;
+							}
+						});
+
+						return response;
+					};
 				},
-			}).then(async (response) => {
-				if (!response.ok) {
-					if (config.logging) {
-						console.error("PX:status", response.status);
-					}
-					throw new Error(await response.text().catch((e) => e));
-				}
-				const content = await response.text();
-				if (config.logging) {
-					console.debug("PX:response", content);
-				}
-				try {
-					return JSON.parse(content);
-				} catch {
-					if (config.logging) {
-						console.debug("PX:not-json");
-					}
-					return content;
-				}
-			});
-
-			return response;
-		};
+			},
+		);
 	},
 });
 

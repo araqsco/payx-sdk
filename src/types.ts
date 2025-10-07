@@ -1,37 +1,39 @@
 export namespace PayXTypes {
 	export type Client = {
-		/**
-		 * Using this API, you register your sale with the tax authority, including the sold products and other relevant details. (The generated receipt's PDF version is stored for 60 days, see section 3 for more information)
-		 */
-		print(request: PrintRequest, options?: Options): Promise<PrintResponse>;
-		/**
-		 * If the correct data is entered, this method will send the fiscal receipt via SMS to the specified phone number.
-		 */
-		sendSms(
-			request: SendSmsRequest,
-			options?: Options,
-		): Promise<SendSmsResponse>;
-		/**
-		 * If the correct data is entered, this method will send the fiscal receipt via email.
-		 */
-		sendEmail(
-			request: SendEmailRequest,
-			options?: Options,
-		): Promise<SendEmailResponse>;
-		/**
-		 * This API performs a fiscal receipt return.
-		 */
-		reverse(
-			request: ReverseRequest,
-			options?: Options,
-		): Promise<ReverseResponse>;
-		/**
-		 * This API performs both transaction returns and returns of transactions made using prepayment, excluding prepayment receipts. A full return of the products is processed.
-		 */
-		reverseByReceiptId(
-			request: ReverseByReceiptIdRequest,
-			options?: Options,
-		): Promise<ReverseByReceiptIdResponse>;
+		hdm: {
+			/**
+			 * Using this API, you register your sale with the tax authority, including the sold products and other relevant details. (The generated receipt's PDF version is stored for 60 days, see section 3 for more information)
+			 */
+			print(request: PrintRequest, options?: Options): Promise<PrintResponse>;
+			/**
+			 * If the correct data is entered, this method will send the fiscal receipt via SMS to the specified phone number.
+			 */
+			sendSms(
+				request: SendSmsRequest,
+				options?: Options,
+			): Promise<SendSmsResponse>;
+			/**
+			 * If the correct data is entered, this method will send the fiscal receipt via email.
+			 */
+			sendEmail(
+				request: SendEmailRequest,
+				options?: Options,
+			): Promise<SendEmailResponse>;
+			/**
+			 * This API performs a fiscal receipt return.
+			 */
+			reverse(
+				request: ReverseRequest,
+				options?: Options,
+			): Promise<ReverseResponse>;
+			/**
+			 * This API performs both transaction returns and returns of transactions made using prepayment, excluding prepayment receipts. A full return of the products is processed.
+			 */
+			reverseByReceiptId(
+				request: ReverseByReceiptIdRequest,
+				options?: Options,
+			): Promise<ReverseByReceiptIdResponse>;
+		};
 	};
 
 	export type Options = {

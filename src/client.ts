@@ -62,5 +62,12 @@ async function getToken(options: PayXTypes.Options): Promise<string> {
 		throw new Error("No auth header in login response");
 	}
 
+	if (options.logging) {
+		console.debug(
+			"Got new token",
+			authHeader.slice(0, 10) + "".padStart(authHeader.slice(10).length, "*"),
+		);
+	}
+
 	return authHeader;
 }

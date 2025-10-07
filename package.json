@@ -1,0 +1,38 @@
+{
+	"name": "payx-sdk",
+	"version": "1.0.0",
+	"description": "Third-party PayX SDK",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/araqsco/nikitamobile.git"
+	},
+	"bugs": {
+		"url": "https://github.com/araqsco/nikitamobile/issues"
+	},
+	"homepage": "https://github.com/araqsco/nikitamobile#readme",
+	"scripts": {
+		"build": "tsc",
+		"watch": "tsc -w",
+		"prepare": "npm run build"
+	},
+	"keywords": [
+		"payx",
+		"ehdm",
+		"sdk",
+		"typescript"
+	],
+	"author": "Araqs, Co. <araqsco@gmail.com>",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/node": "^24.3.1",
+		"typescript": "^5.9.2"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

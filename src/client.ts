@@ -11,24 +11,38 @@ export const PayX = new Proxy<PayXTypes.Client>({} as PayXTypes.Client, {
 					const method =
 						key.toString()[0].toLocaleUpperCase() + key.toString().slice(1);
 
+					const isGet = key.toString().startsWith("get");
 					return async (request: unknown, options?: PayXTypes.Options) => {
 						const config = PayXHelpers.getConfig(options);
 
 						const token = await getToken(config);
-						const body = JSON.stringify(request);
+						let response: Promise<Response>;
+						if (isGet) {
+							if (config.logging) {
+								console.debug("PX:path", `${ns}/${method}`);
+								console.debug("PX:query", request);
+							}
+							const params = new URLSearchParams(
+								request as Record<string, string>,
+							);
+							response = fetch(`${config.baseUrl}/${ns}/${method}?${params}`);
+						} else {
+							const body = JSON.stringify(request);
 
-						if (config.logging) {
-							console.debug("PX:path", `${ns}/${method}`);
-							console.debug("PX:body", body);
+							if (config.logging) {
+								console.debug("PX:path", `${ns}/${method}`);
+								console.debug("PX:body", body);
+							}
+							response = fetch(`${config.baseUrl}/${ns}/${method}`, {
+								method: "POST",
+								body,
+								headers: {
+									"Content-Type": "application/json",
+									Authorization: token,
+								},
+							});
 						}
-						const response = await fetch(`${config.baseUrl}/${ns}/${method}`, {
-							method: "POST",
-							body,
-							headers: {
-								"Content-Type": "application/json",
-								Authorization: token,
-							},
-						}).then(async (response) => {
+						const data = await response.then(async (response) => {
 							if (!response.ok) {
 								if (config.logging) {
 									console.error("PX:status", response.status);
@@ -49,7 +63,7 @@ export const PayX = new Proxy<PayXTypes.Client>({} as PayXTypes.Client, {
 							}
 						});
 
-						return response;
+						return data;
 					};
 				},
 			},

@@ -34,6 +34,12 @@ export namespace PayXTypes {
 				options?: Options,
 			): Promise<ReverseByReceiptIdResponse>;
 		};
+		history: {
+			getHistoryByReceiptId(
+				request: GetHistoryByReceiptIdRequest,
+				options?: Options,
+			): Promise<GetHistoryByReceiptIdResponse>;
+		};
 	};
 
 	export type Options = {
@@ -277,4 +283,110 @@ export namespace PayXTypes {
 	};
 
 	export type ReverseByReceiptIdResponse = Receipt;
+
+	export type GetHistoryByReceiptIdRequest = {
+		receiptId: number;
+	};
+
+	export type GetHistoryByReceiptIdResponse = {
+		/**
+		 * History ID
+		 */
+		id: number;
+
+		/**
+		 * 1 - Sale receipt
+		 * 2 - Return receipt
+		 * 3 - Partially returned
+		 * 4 - Fully receipt
+		 */
+		status: 1 | 2 | 3 | 4;
+		/**
+		 * Date of generation
+		 */
+		createdDate: string;
+		/**
+		 * Return date
+		 */
+		updateDate: string;
+		/**
+		 * PDF receipt
+		 */
+		url: string;
+		/**
+		 * Cshier's ID
+		 */
+		cashier: number;
+		/**
+		 * Receipt number
+		 */
+		receiptId: number;
+		/**
+		 * Cash amount
+		 */
+		cashAmount: number;
+		/**
+		 * Non-cash (card) amount
+		 */
+		cardAmount: number;
+		/**
+		 * Amount covered by prepayment
+		 */
+		prePaymentAmount: number;
+		/**
+		 * Refund amount
+		 */
+		partialAmount: number;
+		/**
+		 * Total amount
+		 */
+		totalPrice: number;
+		/**
+		 * Additional discount
+		 */
+		additionalDiscount: number;
+		/**
+		 * Type of additional discount
+		 */
+		additionalDiscountType: number;
+		/**
+		 * Refunded amount
+		 */
+		updatedPrice: number;
+		/**
+		 * Buyer's TIN (Tax Identification Number)
+		 */
+		partnerTin: string;
+		/**
+		 * Receipt type:
+		 * 1 - Sale with goods
+		 * 2 - Prepayment receipt
+		 * 3 - Return receipt
+		 */
+		saleType: 1 | 2 | 3;
+		/**
+		 * Company ID
+		 */
+		companyId: number;
+		/**
+		 * Transaction was made via StoreX in case of True
+		 */
+		isStoreX: boolean;
+		/**
+		 * partner
+		 */
+		partner: number;
+		/**
+		 * Unique request code sent from StoreX
+		 */
+		storeUniqueCode: number;
+		/**
+		 * UniqueCode, unique identifier of the request (see section 2 for more details)
+		 */
+		hdmUq: string;
+		/**
+		 * List of products
+		 */
+		products: Product[];
+	};
 }

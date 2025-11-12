@@ -38,7 +38,7 @@ export const PayX = new Proxy<PayXTypes.Client>({} as PayXTypes.Client, {
 								body,
 								headers: {
 									"Content-Type": "application/json",
-									Authorization: token,
+									Authorization: `Bearer ${token}`,
 								},
 							});
 						}

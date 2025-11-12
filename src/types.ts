@@ -77,7 +77,7 @@ export namespace PayXTypes {
 		/*
 		 * Buyer's TIN
 		 */
-		partnerTin: string;
+		partnerTin?: number;
 		/**
 		 * Unique request ID – each generated e-receipt must have a unique, non-repeating ID (up to 30 characters, containing only digits or a combination of Latin letters and digits)
 		 */
@@ -356,7 +356,7 @@ export namespace PayXTypes {
 		/**
 		 * Buyer's TIN (Tax Identification Number)
 		 */
-		partnerTin: string;
+		partnerTin?: number;
 		/**
 		 * Receipt type:
 		 * 1 - Sale with goods

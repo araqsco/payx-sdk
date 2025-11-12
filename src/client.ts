@@ -12,24 +12,33 @@ export const PayX = new Proxy<PayXTypes.Client>({} as PayXTypes.Client, {
 						key.toString()[0].toLocaleUpperCase() + key.toString().slice(1);
 
 					const isGet = key.toString().startsWith("get");
+					const isQuery = key.toString() === "reverseByReceiptId";
+
 					return async (request: unknown, options?: PayXTypes.Options) => {
 						const config = PayXHelpers.getConfig(options);
 
 						const token = await getToken(config);
-						let response: Promise<Response>;
-						if (isGet) {
+						let url: string;
+						let opts: RequestInit;
+						if (isGet || isQuery) {
+							const params = new URLSearchParams(
+								request as Record<string, string>,
+							);
 							if (config.logging) {
 								console.debug("PX:path", `${ns}/${method}`);
 								console.debug("PX:query", request);
 							}
-							const params = new URLSearchParams(
-								request as Record<string, string>,
-							);
-							response = fetch(`${config.baseUrl}/${ns}/${method}?${params}`, {
+							url = `${config.baseUrl}/${ns}/${method}?${params}`;
+						} else {
+							url = `${config.baseUrl}/${ns}/${method}`;
+						}
+
+						if (isGet) {
+							opts = {
 								headers: {
 									Authorization: `Bearer ${token}`,
 								},
-							});
+							};
 						} else {
 							const body = JSON.stringify(request);
 
@@ -37,16 +46,16 @@ export const PayX = new Proxy<PayXTypes.Client>({} as PayXTypes.Client, {
 								console.debug("PX:path", `${ns}/${method}`);
 								console.debug("PX:body", body);
 							}
-							response = fetch(`${config.baseUrl}/${ns}/${method}`, {
+							opts = {
 								method: "POST",
 								body,
 								headers: {
 									"Content-Type": "application/json",
 									Authorization: `Bearer ${token}`,
 								},
-							});
+							};
 						}
-						const data = await response.then(async (response) => {
+						const data = fetch(url, opts).then(async (response) => {
 							if (!response.ok) {
 								if (config.logging) {
 									console.error("PX:status", response.status);

@@ -1,4 +1,4 @@
-# Third-party NikitaMobile SDK
+# Third-party Payx SDK
 
 > This package defines types and helpers to be used for PayX API
 

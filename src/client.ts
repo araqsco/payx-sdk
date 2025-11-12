@@ -25,7 +25,11 @@ export const PayX = new Proxy<PayXTypes.Client>({} as PayXTypes.Client, {
 							const params = new URLSearchParams(
 								request as Record<string, string>,
 							);
-							response = fetch(`${config.baseUrl}/${ns}/${method}?${params}`);
+							response = fetch(`${config.baseUrl}/${ns}/${method}?${params}`, {
+								headers: {
+									Authorization: `Bearer ${token}`,
+								},
+							});
 						} else {
 							const body = JSON.stringify(request);
 

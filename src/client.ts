@@ -79,8 +79,11 @@ async function getToken(options: PayXTypes.Options): Promise<string> {
 			password: options.password,
 		}),
 	});
-	const authHeader = response.headers.get("Authorization");
+	const authHeader = response.headers.get("Token");
 	if (!authHeader) {
+		if (options.logging) {
+			console.warn("Login Headers", authHeader)
+		}
 		throw new Error("No auth header in login response");
 	}
 

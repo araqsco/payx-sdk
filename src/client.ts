@@ -74,6 +74,9 @@ export const PayX = new Proxy<PayXTypes.Client>({} as PayXTypes.Client, {
 async function getToken(options: PayXTypes.Options): Promise<string> {
 	const response = await fetch(`${options.baseUrl}/Login/LoginUser`, {
 		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
 		body: JSON.stringify({
 			username: options.username,
 			password: options.password,
@@ -82,7 +85,7 @@ async function getToken(options: PayXTypes.Options): Promise<string> {
 	const authHeader = response.headers.get("Token");
 	if (!authHeader) {
 		if (options.logging) {
-			console.warn("Login Headers", [...response.headers.entries()])
+			console.warn("Login Headers", [...response.headers.entries()]);
 		}
 		throw new Error("No auth header in login response");
 	}
